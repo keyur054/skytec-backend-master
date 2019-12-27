@@ -76,16 +76,6 @@ schemas.companyAddnew = {
   required: ["company_name", "customer_supplier_no"]
 };
 
-schemas.companyUpdate = {
-  id: "/update",
-  type: "object",
-  properties: {
-    company_name: { type: "string" },
-    customer_supplier_no: { type: "string" }
-  },
-  required: ["company_name", "customer_supplier_no"]
-};
-
 validatorObj.isValid = false;
 validatorObj.errors = [];
 validatorObj.validate = function(inputs, obj, req) {

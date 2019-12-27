@@ -45,16 +45,16 @@ router.route("/web/company/addnew").post(
  */
   router.route("/web/company").get(function(req, res) {
     system.co(function*() {
-      var data = yield system.db.Company.find();
+      var data = yield system.db.Company.find().populate("qms").populate("payment_terms");
       res.json({
         success: true,
-        data: data
+        company: data
       });
     });
   });
 
 /**
- * Company update 
+ * Single Company Data for Edit
  */
 router.route("/web/company/:id").get(function(req, res) {
   system.co(function*() {
