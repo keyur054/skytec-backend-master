@@ -10,8 +10,7 @@ var Schema = mongoose.Schema,
     company_name: { type: String, required: true },
     customer_supplier_no: { type: String },
     company_short_name: { type: String, unique: true },
-    is_customer: { type: Boolean },
-    is_supplier: { type: Boolean },
+    customer_supplier: { type : Array , "default" : [] },
     qms: [
       {
           type: mongoose.Schema.Types.ObjectId,

@@ -12,4 +12,5 @@ module.exports = {
   projectClassification: require("./ProjectClassificationModal"),
   projectStatus: require("./ProjectStatusModal"),
   Company: require("./CompanyModal"),
+  Contacts: require("./ContactsModal"),
 };

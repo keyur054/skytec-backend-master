@@ -76,6 +76,16 @@ schemas.companyAddnew = {
   required: ["company_name", "customer_supplier_no"]
 };
 
+schemas.contactAddnew = {
+  id: "/contactAddnew",
+  type: "object",
+  properties: {
+    title: { type: "string" }
+  },
+  required: ["title"]
+};
+
+
 validatorObj.isValid = false;
 validatorObj.errors = [];
 validatorObj.validate = function(inputs, obj, req) {
