@@ -104,4 +104,15 @@ router.route("/web/qms").get(function(req, res) {
   });
 }); 
 
+router.route("/web/paymentterm").get(function(req, res) {
+  system.co(function*() {
+    
+    var data = yield system.db.paymentTerms.find();
+    res.json({
+      success: true,
+      payment_terms: data
+    });
+  });
+});
+
 module.exports = router;
