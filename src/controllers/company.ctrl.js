@@ -93,6 +93,15 @@ router.route("/web/company/:id").post(function(req, res) {
   });
 });
 
- 
+router.route("/web/qms").get(function(req, res) {
+  system.co(function*() {
+    
+    var data = yield system.db.qms.find();
+    res.json({
+      success: true,
+      qms: data
+    });
+  });
+}); 
 
 module.exports = router;
