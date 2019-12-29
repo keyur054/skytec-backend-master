@@ -28,4 +28,32 @@ router.route("/web/contact/addnew").post(
     }
   );
 
+
+ /**
+ * Get Contacts List
+ */
+router.route("/web/contacts").get(function (req, res) {
+  system.co(function* () {
+    var data = yield system.db.Contacts.find();
+    res.json({
+      success: true,
+      contacts: data
+    });
+  });
+});
+ 
+/**
+ * Get Sex List
+ */
+router.route("/web/sex").get(function (req, res) {
+  system.co(function* () {
+    var data = yield system.db.sex.find();
+    res.json({
+      success: true,
+      sex: data
+    });
+  });
+});
+ 
+
   module.exports = router;
