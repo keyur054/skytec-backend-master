@@ -85,6 +85,16 @@ schemas.contactAddnew = {
   required: ["title"]
 };
 
+schemas.addressAddnew = {
+  id: "/addressAddnew",
+  type: "object",
+  properties: {
+    city: { type: "string" }
+  },
+  required: ["city"]
+};
+
+
 
 validatorObj.isValid = false;
 validatorObj.errors = [];
