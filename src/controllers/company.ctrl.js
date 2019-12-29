@@ -31,6 +31,7 @@ router.route("/web/company/addnew").post(
 
           res.json({
             success: true,
+            id: savedData._id,
             message: "Company Created Successfully."
           });
         }
@@ -56,7 +57,7 @@ router.route("/web/company").get(function (req, res) {
 /**
  * Single Company Data for Edit
  */
-router.route("/web/company/:id").get(function (req, res) {
+router.route("/web/company/edit/:id").get(function (req, res) {
   system.co(function* () {
     var data = yield system.db.Company
       .findById(mongoose.Types.ObjectId(req.params.id));
@@ -70,7 +71,8 @@ router.route("/web/company/:id").get(function (req, res) {
 /**
  * Single Company Update
  */
-router.route("/web/company/:id").post(function (req, res) {
+router.route("/web/company/id").post(function (req, res) {
+  console.log("company update line no:75");
   var input = req.body;
   system.co(function* () {
     if (system.validator.validate(input, "companyAddnew", req)) {
@@ -99,21 +101,39 @@ router.route("/web/company/:id").post(function (req, res) {
 /**
  * Single Company Data for Edit
  */
-router.route("/web/company/delete/:id").get(function (req, res) {
-  res.json({
-    success: true,
-    company: req
+router.route("/web/company/delete/:id").post(function (req, res) {
+  system.co(function* () {
+
+    var contacts = yield system.db.Address.findOne({ c_id: req.params.id });
+    var address = yield system.db.Address.findOne({ c_id: req.params.id });
+
+    if (contacts == null && address == null) {
+      var company = yield system.db.Company.deleteOne({ _id: req.params.id });
+      if (company) {
+        res.json({
+          success: true,
+          message: "Customer / Supplier deleted successfully"
+        });
+      }
+      else {
+        res.json({
+          success: false,
+          message: "Failed to delete customer / supplier"
+        });
+      }
+    }
+    else {
+      res.json({
+        success: false,
+        message: "Contact Or Address exists for this customer and supplier"
+      });
+    }
   });
-  // system.co(function*() {
-  //   var data = yield system.db.Company
-  //     .findById(mongoose.Types.ObjectId(req.params.id));
-  //   res.json({
-  //     success: true,
-  //     company: data
-  //   });
-  // });
 });
 
+/**
+ * Get QMS list
+ */
 router.route("/web/qms").get(function (req, res) {
   system.co(function* () {
 
@@ -125,6 +145,9 @@ router.route("/web/qms").get(function (req, res) {
   });
 });
 
+/**
+ * Get payment term list
+ */
 router.route("/web/paymentterm").get(function (req, res) {
   system.co(function* () {
 
@@ -135,5 +158,32 @@ router.route("/web/paymentterm").get(function (req, res) {
     });
   });
 });
+
+/**
+ * Search list
+ */
+router.route("/web/company/search").post(function (req, res) {
+  system.co(function* () {
+
+    var input = req.body;
+    console.log(input);
+    var data = yield system.db.Company.find({
+      //company_name: input.company_name,
+      customer_supplier_no: input.customer_no
+    });
+    res.json({
+      success: true,
+      company: data
+    });
+    //console.log(req)
+    // var data = yield system.db.paymentTerms.find();
+    // res.json({
+    //   success: true,
+    //   payment_terms: data
+    // });
+  });
+});
+
+
 
 module.exports = router;

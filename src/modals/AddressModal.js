@@ -7,6 +7,12 @@ var Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId,
   dataTables = require("mongoose-datatables"),
   AddressSchema = new Schema({
+    c_id: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "company"
+      }
+  ],
     street: { type: String },
     number: { type: String},
     zipcode: { type: String},

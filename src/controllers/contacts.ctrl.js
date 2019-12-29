@@ -32,9 +32,9 @@ router.route("/web/contact/addnew").post(
  /**
  * Get Contacts List
  */
-router.route("/web/contacts").get(function (req, res) {
+router.route("/web/contacts/:id").get(function (req, res) {
   system.co(function* () {
-    var data = yield system.db.Contacts.find();
+    var data = yield system.db.Contacts.find({ c_id: req.params.id } );;
     res.json({
       success: true,
       contacts: data
