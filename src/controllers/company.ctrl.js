@@ -65,7 +65,8 @@ router.route("/web/company/addnew").post(
  */
 router.route("/web/company").get(function (req, res) {
   system.co(function* () {
-    var data = yield system.db.Company.find().populate("qms").populate("payment_terms");
+    var data = yield system.db.Company.find().populate("qms")
+      .populate("payment_terms");
     res.json({
       success: true,
       company: data
