@@ -29,12 +29,12 @@ router.route("/web/address/addnew").post(
 );
 
 /**
-* Get Address List
-*/
-router.route("/web/address/:id").get(function (req, res) {
+ * Single Address Data for Edit
+ */
+router.route("/web/address/edit/:id").get(function (req, res) {
   system.co(function* () {
-    //var data = yield system.db.Address.find();
-    var data = yield system.db.Address.find({ c_id: req.params.id });;
+    var data = yield system.db.Address
+      .findById(mongoose.Types.ObjectId(req.params.id));
     res.json({
       success: true,
       address: data
@@ -42,21 +42,37 @@ router.route("/web/address/:id").get(function (req, res) {
   });
 });
 
+
+/**
+* Get Address List
+*/
+router.route("/web/address/:id").get(function (req, res) {
+  system.co(function* () {
+    //var data = yield system.db.Address.find();
+    var data = yield system.db.Address.find({ c_id: req.params.id });
+    res.json({
+      success: true,
+      address: data
+    });
+  });
+});
+
+
 /**
  * Single Address Update
  */
 router.route("/web/address/:id").post(function (req, res) {
   var input = req.body;
+  
   system.co(function* () {
     if (system.validator.validate(input, "addressAddnew", req)) {
-      var company = yield system.db.Address.findOneAndUpdate(
+      var address = yield system.db.Address.findOneAndUpdate(
         { _id: mongoose.Types.ObjectId(req.params.id) },
         input
       );
-      if (company) {
+      if (address) {
         res.json({
           success: true,
-          company: company,
           message: "Address Update Successfully"
         });
       } else {
@@ -71,35 +87,23 @@ router.route("/web/address/:id").post(function (req, res) {
   });
 });
 
+/**
+ * Delete single address
+ */
 router.route("/web/address/delete/:id").post(function (req, res) {
   system.co(function* () {
-    var address = yield system.db.Address.findById(mongoose.Types.ObjectId(req.params.id));
-
-    if (address != null) {
-      var company = yield system.db.Company.findById({ _id: address.c_id[0] });
-      var contacts = yield system.db.Contacts.findById({ c_id: address.c_id[0] });
-
-      if (company == null && contacts == null) {
-        var address = yield system.db.Address.deleteOne({ _id: req.params.id });
-        if (address) {
-          res.json({
-            success: true,
-            message: "Address deleted successfully"
-          });
-        }
-        else {
-          res.json({
-            success: false,
-            message: "Failed to delete Address"
-          });
-        }
-      }
-      else {
-        res.json({
-          success: false,
-          message: "Contact Or Customer exists for this customer and supplier"
-        });
-      }
+    var address = yield system.db.Address.deleteOne({ _id: req.params.id });
+    if (address) {
+      res.json({
+        success: true,
+        message: "Address deleted successfully"
+      });
+    }
+    else {
+      res.json({
+        success: false,
+        message: "Failed to delete Address"
+      });
     }
   });
 });

@@ -71,30 +71,63 @@ router.route("/web/company/edit/:id").get(function (req, res) {
 /**
  * Single Company Update
  */
-router.route("/web/company/id").post(function (req, res) {
-  console.log("company update line no:75");
+router.route("/web/company/:id").post(function (req, res) {
   var input = req.body;
   system.co(function* () {
-    if (system.validator.validate(input, "companyAddnew", req)) {
-      var company = yield system.db.Company.findOneAndUpdate(
-        { _id: mongoose.Types.ObjectId(req.params.id) },
-        input
-      );
-      if (company) {
-        res.json({
-          success: true,
-          company: company,
-          message: "Company Update Successfully"
-        });
-      } else {
-        res.json({
-          success: false,
-          message: "Company not found."
-        });
+    if (input.isRename) {
+
+      var existCompany = yield system.db.Company.find({ company_short_name: input.company_short_name, _id: { $ne: input._id } });
+
+      if (!existCompany || existCompany.length <= 0) {
+        if (system.validator.validate(input, "companyAddnew", req)) {
+          var company = yield system.db.Company.findOneAndUpdate(
+            { _id: mongoose.Types.ObjectId(req.params.id) },
+            input
+          );
+          if (company) {
+            res.json({
+              success: true,
+              company: company,
+              message: "Company Update Successfully"
+            });
+          } else {
+            res.json({
+              success: false,
+              message: "Company not found."
+            });
+          }
+        } else {
+          
+          res.json({ success: false, error: req.reqError });
+        }
       }
-    } else {
-      res.json({ success: false, error: req.reqError });
+      else {
+        res.json({ success: false, message: "Company short name already exist." });
+      }
     }
+    else {
+      if (system.validator.validate(input, "companyAddnew", req)) {
+        var company = yield system.db.Company.findOneAndUpdate(
+          { _id: mongoose.Types.ObjectId(req.params.id) },
+          input
+        );
+        if (company) {
+          res.json({
+            success: true,
+            company: company,
+            message: "Company Update Successfully"
+          });
+        } else {
+          res.json({
+            success: false,
+            message: "Company not found."
+          });
+        }
+      } else {
+        res.json({ success: false, error: req.reqError });
+      }
+    }
+
   });
 });
 
