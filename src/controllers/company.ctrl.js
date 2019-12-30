@@ -1,4 +1,6 @@
 var system = require("./../modules");
+var fs = require('fs');
+
 /**
  * Company Insert
  */
@@ -28,6 +30,24 @@ router.route("/web/company/addnew").post(
 
           var newUser = new system.db.Company(input);
           var savedData = yield newUser.save();
+
+          for (var i = 0; i <= newUser.customer_supplier.length; i++) {
+            //console.log(newUser.customer_supplier[i])
+            var cs_name ="";
+            if (newUser.customer_supplier[i] == 1) {
+              cs_name = "C" + newUser.customer_supplier_no.substring(0, 3) + "_" + newUser.company_short_name;
+            }
+            else if(newUser.customer_supplier[i] == 2)
+            {
+              cs_name = "S" + newUser.customer_supplier_no.substring(0, 3) + "_" + newUser.company_short_name;
+            }
+            if(cs_name != ""){
+              var jsonData = {"c_id":newUser._id,"folder_name":cs_name}
+              var newFolder = new system.db.CSfolder(jsonData);
+              var savedDatanew = yield newFolder.save();
+            }
+          }
+          
 
           res.json({
             success: true,
