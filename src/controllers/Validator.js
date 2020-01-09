@@ -94,6 +94,15 @@ schemas.addressAddnew = {
   required: ["city"]
 };
 
+schemas.aircraftAddnew = {
+  id: "/aircraftAddnew",
+  type: "object",
+  properties: {
+    aircraft_no: { type: "string" }
+  },
+  required: ["aircraft_no"]
+};
+
 
 
 validatorObj.isValid = false;

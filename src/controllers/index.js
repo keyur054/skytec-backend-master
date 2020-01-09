@@ -4,4 +4,5 @@ module.exports = {
   company: require("./company.ctrl"),
   contacts: require("./contacts.ctrl"),
   address: require("./address.ctrl"),
+  aircraft: require("./aircraft.ctrl"),
 };

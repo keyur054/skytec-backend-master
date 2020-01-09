@@ -66,7 +66,7 @@ router.route("/web/company/addnew").post(
 router.route("/web/company").get(function (req, res) {
   system.co(function* () {
     var data = yield system.db.Company.find().populate("qms")
-      .populate("payment_terms");
+      .populate("payment_terms").collation({locale:'en'}).sort({'company_name': 1});
     res.json({
       success: true,
       company: data
@@ -85,6 +85,73 @@ router.route("/web/company/edit/:id").get(function (req, res) {
       success: true,
       company: data
     });
+  });
+});
+
+router.route("/web/company/search").post(function (req, res) {
+  system.co(function* () {
+    var input = req.body;
+    var jsondata=[];
+    console.log("95line",input);
+    console.log("96lonee" , jsondata);
+    
+    if(input.company_name != '' && input.company_name != undefined){
+       //jsondata +='{ company_name: '+ "'"+input.company_name+"'" +'}';
+       jsondata.push({ company_name: ''+input.company_name+''});
+    }
+    if(input.customer_supplier_no != '' && input.customer_supplier_no != undefined ){
+      //jsondata +='{ customer_supplier_no :'+ input.customer_supplier_no +'}';
+      jsondata.push({ customer_supplier_no: ''+input.customer_supplier_no+''});
+    }
+    if(input.surname != '' && input.surname != undefined ){
+      jsondata.push({ surname: ''+input.surname+''});
+    }
+    if(input.city != '' && input.city != undefined){
+      //jsondata +='{ city :'+ input.city +'}';
+      jsondata.push({ city: ''+input.city+''});
+    }
+    if(input.street != '' && input.street != undefined){
+      //jsondata +='{ street :'+ input.street +'}';
+      jsondata.push({ street: ''+input.street+''});
+    }
+
+    console.log(jsondata);
+    
+    var companyList =  yield system.db.Company.aggregate([
+
+      {
+        $lookup: {
+          from: "Address",       // other table name
+          localField: "_id",   // name of users table field
+          foreignField: "c_id", // name of userinfo table field
+          as: "address"         // alias for userinfo table
+        }
+      },
+      
+      {
+        $lookup: {
+          from: "contacts",
+          localField: "_id",
+          foreignField: "c_id",
+          as: "contacts"
+        }
+      },
+      // define some conditions here 
+      {
+        $match: {
+         // $and: [jsondata]
+          $or: jsondata
+        }
+      }
+
+     
+    ]);
+    console.log("149sfd",companyList[0]);
+    
+    // res.json({
+    //   success: true,
+    //   companies: companyList
+    // });
   });
 });
 
@@ -223,27 +290,29 @@ router.route("/web/paymentterm").get(function (req, res) {
 /**
  * Search list
  */
-router.route("/web/company/search").post(function (req, res) {
-  system.co(function* () {
+// router.route("/web/company/search").post(function (req, res) {
+//   system.co(function* () {
 
-    var input = req.body;
-    console.log(input);
-    var data = yield system.db.Company.find({
-      //company_name: input.company_name,
-      customer_supplier_no: input.customer_no
-    });
-    res.json({
-      success: true,
-      company: data
-    });
-    //console.log(req)
-    // var data = yield system.db.paymentTerms.find();
-    // res.json({
-    //   success: true,
-    //   payment_terms: data
-    // });
-  });
-});
+//     var input = req.body;
+//     console.log(input);
+//     var data = yield system.db.Company.find({
+//       //company_name: input.company_name,
+//       customer_supplier_no: input.customer_no
+//     });
+//     res.json({
+//       success: true,
+//       company: data
+//     });
+//     //console.log(req)
+//     // var data = yield system.db.paymentTerms.find();
+//     // res.json({
+//     //   success: true,
+//     //   payment_terms: data
+//     // });
+//   });
+// });
+
+
 
 
 

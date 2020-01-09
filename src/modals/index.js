@@ -14,5 +14,6 @@ module.exports = {
   Company: require("./CompanyModal"),
   Contacts: require("./ContactsModal"),
   Address: require("./AddressModal"),
-  CSfolder: require("./CSfolderModal")
+  CSfolder: require("./CSfolderModal"),
+  Aircraft:require("./AircraftModal")
 };
